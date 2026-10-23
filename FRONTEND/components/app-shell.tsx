@@ -14,8 +14,6 @@ interface NavItem {
   href: string;
   label: string;
   icon: IconName;
-  /** iOS-Settings-style icon tile colour */
-  tile: string;
   roles: Role[];
   hint: string;
 }
@@ -25,33 +23,32 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: 'Today',
     items: [
-      { href: '/dashboard/', label: 'Dashboard', icon: 'dashboard', tile: 'bg-[#0A84FF]', roles: ['OWNER', 'CASHIER'], hint: 'Today at a glance' },
-      { href: '/orders/', label: 'Orders', icon: 'orders', tile: 'bg-[#FF9F0A]', roles: ['OWNER', 'CASHIER'], hint: 'Sales and order history' },
-      { href: '/shift/', label: 'Cash Drawer', icon: 'wallet', tile: 'bg-[#30D158]', roles: ['OWNER', 'CASHIER'], hint: 'Open and close the cash drawer' },
-      { href: '/sync/', label: 'Offline Sync', icon: 'sync', tile: 'bg-[#64D2FF]', roles: ['OWNER', 'CASHIER'], hint: 'Sales saved without internet' },
+      { href: '/dashboard/', label: 'Dashboard', icon: 'dashboard', roles: ['OWNER', 'CASHIER'], hint: 'Today at a glance' },
+      { href: '/orders/', label: 'Orders', icon: 'orders', roles: ['OWNER', 'CASHIER'], hint: 'Sales and order history' },
+      { href: '/shift/', label: 'Cash Drawer', icon: 'wallet', roles: ['OWNER', 'CASHIER'], hint: 'Open and close the cash drawer' },
     ],
   },
   {
     title: 'Stock',
     items: [
-      { href: '/inventory/', label: 'Inventory', icon: 'box', tile: 'bg-[#5E5CE6]', roles: ['OWNER', 'CASHIER'], hint: 'Stock levels, waste, expiry' },
-      { href: '/purchases/', label: 'Purchases', icon: 'truck', tile: 'bg-[#AC8E68]', roles: ['OWNER'], hint: 'Record restocks and suppliers' },
+      { href: '/inventory/', label: 'Inventory', icon: 'box', roles: ['OWNER', 'CASHIER'], hint: 'Stock levels, waste, expiry' },
+      { href: '/purchases/', label: 'Purchases', icon: 'truck', roles: ['OWNER'], hint: 'Record restocks and suppliers' },
     ],
   },
   {
     title: 'Business',
     items: [
-      { href: '/menu/', label: 'Menu & Prices', icon: 'menu', tile: 'bg-[#FF375F]', roles: ['OWNER'], hint: 'Products, sizes, recipes' },
-      { href: '/expenses/', label: 'Expenses', icon: 'receipt', tile: 'bg-[#FF453A]', roles: ['OWNER'], hint: 'Rent, utilities, other costs' },
-      { href: '/reports/', label: 'Reports', icon: 'chart', tile: 'bg-[#BF5AF2]', roles: ['OWNER'], hint: 'Sales and profit' },
+      { href: '/menu/', label: 'Menu & Prices', icon: 'menu', roles: ['OWNER'], hint: 'Products, sizes, recipes' },
+      { href: '/expenses/', label: 'Expenses', icon: 'receipt', roles: ['OWNER'], hint: 'Rent, utilities, other costs' },
+      { href: '/reports/', label: 'Reports', icon: 'chart', roles: ['OWNER'], hint: 'Sales and profit' },
     ],
   },
   {
     title: 'Admin',
     items: [
-      { href: '/users/', label: 'Users', icon: 'users', tile: 'bg-[#0A84FF]', roles: ['OWNER'], hint: 'Staff accounts' },
-      { href: '/settings/', label: 'Settings', icon: 'settings', tile: 'bg-[#8E8E93]', roles: ['OWNER'], hint: 'Shop rules' },
-      { href: '/audit/', label: 'Audit Log', icon: 'shield', tile: 'bg-[#636366]', roles: ['OWNER'], hint: 'Who changed what' },
+      { href: '/users/', label: 'Users', icon: 'users', roles: ['OWNER'], hint: 'Staff accounts' },
+      { href: '/settings/', label: 'Settings', icon: 'settings', roles: ['OWNER'], hint: 'Shop rules' },
+      { href: '/audit/', label: 'Audit Log', icon: 'shield', roles: ['OWNER'], hint: 'Who changed what' },
     ],
   },
 ];
@@ -59,7 +56,7 @@ const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
 export function ConnectionBadge() {
   const { online, unsyncedCount, syncing } = usePos();
   return (
-    <Link href="/sync/" className="flex items-center gap-2" title="Connection and offline sync status">
+    <div className="flex items-center gap-2" title="Connection status">
       <span
         className={cx(
           'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold',
@@ -75,7 +72,7 @@ export function ConnectionBadge() {
           {unsyncedCount} waiting to sync
         </Badge>
       )}
-    </Link>
+    </div>
   );
 }
 
@@ -128,8 +125,8 @@ function NavLinks({ role, active, onNavigate }: { role: Role; active: (href: str
                     aria-current={on ? 'page' : undefined}
                     className={cx('relative flex items-center gap-3 px-2.5 py-2 text-[14px] transition', on ? 'bg-brand text-white' : 'text-ink hover:bg-black/[0.04]')}
                   >
-                    <span className={cx('flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] text-white shadow-sm', n.tile, on && 'ring-1 ring-white/50')}>
-                      <Icon name={n.icon} className="h-[16px] w-[16px]" strokeWidth={2.2} />
+                    <span className={cx('flex h-7 w-7 shrink-0 items-center justify-center', on ? 'text-white' : 'text-[#6e6e73]')}>
+                      <Icon name={n.icon} className="h-[18px] w-[18px]" />
                     </span>
                     <span className={cx('flex-1 truncate', on ? 'font-semibold' : 'font-medium')}>{walkInOnly && n.href === '/orders/' ? 'Sales' : n.label}</span>
                     {/* hairline separator like iOS lists, inset past the icon */}

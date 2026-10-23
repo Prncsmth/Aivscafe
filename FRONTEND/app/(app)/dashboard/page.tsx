@@ -8,9 +8,8 @@ import { usePos } from '@/lib/offline/pos-context';
 import { peso } from '@/lib/money';
 import { PAY_LABEL, PAY_TONE, STATUS_LABEL, STATUS_TONE, fmtDate, fmtDateTime, manilaDay, minutesAgo, qty } from '@/lib/format';
 import type { Order, ShiftSummary } from '@/lib/types';
-import { Badge, Button, Card, EmptyState, ErrorNote, Skeleton, Stat, cx } from '@/components/ui';
+import { Badge, Button, Card, EmptyState, ErrorNote, Skeleton, Stat } from '@/components/ui';
 import { BarChart, RankBars } from '@/components/bar-chart';
-import { Icon } from '@/components/icons';
 import { OrderDetailModal } from '@/components/order-detail';
 
 interface LowStock {
@@ -93,84 +92,6 @@ function Hero({ name }: { name: string }) {
   );
 }
 
-const SETUP_STEPS: { id: string; title: string; text: string; href: string; action: string }[] = [
-  { id: 'passwords', title: 'Change the demo passwords', text: 'Set your own password and create real cashier accounts.', href: '/users/', action: 'Open Users' },
-  { id: 'prices', title: 'Set your real menu and prices', text: 'Edit or archive the demo products so the POS shows your actual menu.', href: '/menu/', action: 'Open Menu & Prices' },
-  { id: 'recipes', title: 'Add a recipe to each size', text: 'Recipes let the system deduct stock and calculate profit automatically.', href: '/menu/', action: 'Edit recipes' },
-  { id: 'stock', title: 'Record your current stock', text: 'Enter what you bought (with cost and expiry) on the Purchases page.', href: '/purchases/', action: 'Record purchase' },
-  { id: 'delivery', title: 'Check delivery areas and fees', text: 'Set the fees for Cordova, Lapu-Lapu and any other area you deliver to.', href: '/settings/', action: 'Open Settings' },
-];
-const SETUP_KEY = 'sms.setupDone';
-
-/** A short, dismissible setup guide so the owner knows what to do first. Progress is remembered on this device. */
-function GettingStarted() {
-  const [done, setDone] = useState<string[]>([]);
-  const [hidden, setHidden] = useState(true);
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(SETUP_KEY) ?? '{}') as { done?: string[]; hidden?: boolean };
-      setDone(saved.done ?? []);
-      setHidden(!!saved.hidden);
-    } catch {
-      setHidden(false);
-    }
-  }, []);
-  const save = (next: { done: string[]; hidden: boolean }) => {
-    setDone(next.done);
-    setHidden(next.hidden);
-    try {
-      localStorage.setItem(SETUP_KEY, JSON.stringify(next));
-    } catch {
-      /* storage unavailable: progress is not remembered */
-    }
-  };
-  if (hidden) return null;
-  const toggle = (id: string) => save({ done: done.includes(id) ? done.filter((x) => x !== id) : [...done, id], hidden: false });
-  return (
-    <Card className="animate-rise p-5">
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-bold">Getting started</h2>
-          <p className="text-sm text-muted">
-            {done.length} of {SETUP_STEPS.length} done. Finish these once and the system takes care of the rest.
-          </p>
-        </div>
-        <Button variant="ghost" size="sm" onClick={() => save({ done, hidden: true })}>
-          Hide guide
-        </Button>
-      </div>
-      <div className="mb-4 h-1.5 rounded-full bg-subtle">
-        <div className="h-1.5 rounded-full bg-brand transition-[width]" style={{ width: `${(done.length / SETUP_STEPS.length) * 100}%` }} />
-      </div>
-      <ol className="space-y-2">
-        {SETUP_STEPS.map((s, i) => {
-          const isDone = done.includes(s.id);
-          return (
-            <li key={s.id} className="flex flex-wrap items-center gap-3 rounded-xl border border-line p-3">
-              <button
-                onClick={() => toggle(s.id)}
-                aria-label={isDone ? `Mark "${s.title}" as not done` : `Mark "${s.title}" as done`}
-                className={cx('flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-sm font-semibold', isDone ? 'border-ok bg-ok text-white' : 'border-line text-muted')}
-              >
-                {isDone ? <Icon name="check" className="h-4 w-4" /> : i + 1}
-              </button>
-              <div className="min-w-0 flex-1">
-                <p className={cx('font-semibold', isDone && 'text-muted line-through')}>{s.title}</p>
-                <p className="text-sm text-muted">{s.text}</p>
-              </div>
-              <Link href={s.href}>
-                <Button variant="secondary" size="sm">
-                  {s.action}
-                </Button>
-              </Link>
-            </li>
-          );
-        })}
-      </ol>
-    </Card>
-  );
-}
-
 function OwnerDashboard() {
   const [d, setD] = useState<OwnerDash | null>(null);
   const [error, setError] = useState('');
@@ -187,7 +108,6 @@ function OwnerDashboard() {
   const today = manilaDay();
   return (
     <div className="space-y-6">
-      <GettingStarted />
       {(d.openConflicts > 0 || d.pendingShiftReviews > 0 || d.unverifiedGcash.count > 0) && (
         <div className="flex flex-wrap gap-2">
           {d.openConflicts > 0 && (
