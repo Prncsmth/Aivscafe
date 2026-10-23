@@ -910,6 +910,7 @@
         },
         {
           "name": "Dingdong",
+          "image": "/menu/dingdong.jpg",
           "variants": [
             [
               "Regular",
@@ -919,6 +920,7 @@
         },
         {
           "name": "Kropek",
+          "image": "/menu/kropek.jpg",
           "variants": [
             [
               "Regular",
@@ -933,6 +935,7 @@
       "products": [
         {
           "name": "Red Horse",
+          "image": "/menu/red-horse.jpg",
           "variants": [
             [
               "500ml",
@@ -946,6 +949,7 @@
         },
         {
           "name": "San Mig Light",
+          "image": "/menu/san-mig-light.jpg",
           "variants": [
             [
               "Bottle",

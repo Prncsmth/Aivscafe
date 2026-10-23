@@ -298,10 +298,14 @@ export function Modal({
   wide?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Keep the latest onClose without re-running the effect: callers pass a new function on every
+  // render, and re-running would move focus back to the first field after each keystroke.
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && closeRef.current();
     document.addEventListener('keydown', onKey);
     const first = ref.current?.querySelector<HTMLElement>('input, select, textarea, button:not([data-close])');
     first?.focus();
@@ -311,7 +315,7 @@ export function Modal({
       document.body.style.overflow = '';
       prev?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true">

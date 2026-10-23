@@ -1,0 +1,12 @@
+Photos for items not on the menu board, from Wikimedia Commons:
+
+red-horse.jpg      "Red Horse Beer" by David Stanley, CC BY 2.0
+                   https://commons.wikimedia.org/wiki/File:Red_Horse_Beer_(47993535798).jpg
+san-mig-light.jpg  "San Mig Light Beer (Philippines) 01" by Obsidian Soul, CC0
+                   https://commons.wikimedia.org/wiki/File:San_Mig_Light_Beer_(Philippines)_01.jpg
+kropek.jpg         "Puffed shrimp chips" by Fumikas Sagisavas, CC0
+                   https://commons.wikimedia.org/wiki/File:Puffed_shrimp_chips.jpg
+dingdong.jpg       "Honey roasted peanuts" by Glane23, CC BY-SA 4.0
+                   https://commons.wikimedia.org/wiki/File:Honey_roasted_peanuts.JPG
+
+All photos were cropped and resized to 300x300.
