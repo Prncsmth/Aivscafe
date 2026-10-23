@@ -92,6 +92,12 @@ export function ReceiptView({ r, shopName = "Aiv's Cafe" }: { r: ReceiptData; sh
   return (
     <div className="print-area mx-auto max-w-xs rounded-xl border border-line bg-white p-5 font-mono text-[13px] text-ink">
       <div className="text-center">
+        <div className="mb-1 flex items-center justify-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/yummy-brew-blend.png" alt="Yummy Brew Blend" className="h-10 w-auto" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/yummy-takoyaki-delight.png" alt="Yummy Takoyaki Delight" className="h-10 w-auto" />
+        </div>
         <p className="font-heading text-lg font-bold">{shopName}</p>
         <p className="text-[11px]">Yummy Brew Blend &amp; Takoyaki Delight</p>
         <p className="text-[11px]">Bang-bang Road, Cordova, Cebu</p>

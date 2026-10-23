@@ -297,13 +297,16 @@ export default function PosPage() {
         )}
 
         <div className="sticky top-[60px] z-20 -mx-4 mb-4 space-y-3 bg-canvas/85 px-4 py-2 backdrop-blur md:-mx-6 md:px-6">
-          <input
-            className="field h-12 text-base"
-            placeholder="Search products…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search products"
-          />
+          <div className="flex items-center gap-3">
+            <BrandMarks category={catalog.categories.find((c) => c.id === category)?.name ?? null} />
+            <input
+              className="field h-12 min-w-0 flex-1 text-base"
+              placeholder="Search products…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search products"
+            />
+          </div>
           <div className="scrollbar-thin flex gap-2 overflow-x-auto pb-1">
             {[{ id: 'ALL', name: 'All' }, ...catalog.categories].map((c) => (
               <button
@@ -358,6 +361,28 @@ export default function PosPage() {
 
       <AddItemModal product={picking} onClose={() => setPicking(null)} onAdd={(v, mods, q, n) => picking && add(picking, v, mods, q, n)} />
       <ReceiptModal receipt={receipt} onClose={() => setReceipt(null)} shopName={settings?.shopName} />
+    </div>
+  );
+}
+
+// ───────────────────────── Brands ─────────────────────────
+
+/** Yummy Brew Blend makes the drinks; Yummy Takoyaki Delight makes the takoyaki. */
+function BrandMarks({ category }: { category: string | null }) {
+  const tako = category != null && /takoyaki/i.test(category);
+  const drinks = category != null && !tako && !/beer|pulutan|rice/i.test(category);
+  const show = category == null ? ["brew", "tako"] : tako ? ["tako"] : drinks ? ["brew"] : [];
+  if (!show.length) return null;
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      {show.includes("brew") && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src="/brand/yummy-brew-blend.png" alt="Yummy Brew Blend" className="h-12 w-auto" />
+      )}
+      {show.includes("tako") && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src="/brand/yummy-takoyaki-delight.png" alt="Yummy Takoyaki Delight" className="h-12 w-auto" />
+      )}
     </div>
   );
 }

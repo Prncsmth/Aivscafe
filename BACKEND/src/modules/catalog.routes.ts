@@ -165,7 +165,13 @@ const ProductBody = z.object({
   categoryId: z.string().min(1),
   name: z.string().trim().min(1).max(120),
   description: optionalText(500),
-  imageUrl: z.string().url().max(500).nullable().optional(),
+  // A photo served by the frontend (/menu/x.jpg) or a full https:// link
+  imageUrl: z
+    .string()
+    .max(500)
+    .regex(/^(\/[\w\-./]+|https:\/\/\S+)$/, 'Use a /menu/... path or an https:// link')
+    .nullable()
+    .optional(),
   isAvailable: z.boolean().optional(),
   sortOrder: z.number().int().min(0).max(9999).optional(),
   modifierIds: z.array(z.string().min(1)).max(50).optional(),

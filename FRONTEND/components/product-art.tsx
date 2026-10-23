@@ -73,7 +73,7 @@ function Cup({ uid, children, dome = false, straw = true }: { uid: string; child
       )}
       <rect x="44" y="64" width="32" height="14" rx="7" fill="#ffffff" fillOpacity="0.85" />
       <text x="60" y="74" textAnchor="middle" fontSize="8" fontWeight="700" fill={PINK} fontFamily="system-ui, sans-serif">
-        AIV&apos;S
+        BREW
       </text>
     </>
   );

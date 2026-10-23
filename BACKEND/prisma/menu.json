@@ -1,77 +1,981 @@
 {
-  "_readme": "Real menu for Aiv's Cafe, transcribed from the menu board photo. Prices are in PESOS. Fix anything marked CONFIRM, then run: npm run menu:import. Items with price null are skipped (and listed) until you fill them in. Flavors: add each flavor as its own product (e.g. 'Okinawa Milk Tea') so stock and best-seller reports are per flavor.",
+  "_readme": "Real menu for Aiv's Cafe (from the menu board). Prices in PESOS. Drinks: the price under each flavor is the Small; Medium +10, Large +20 (Frappe has no Large). Takoyaki: 6 pcs per order. Items with price null are skipped until filled in. Check with: npm run menu:import -- --dry-run --archive-missing, then apply with: npm run menu:import -- --archive-missing",
   "categories": [
     {
       "name": "Milk Tea",
-      "products": [{ "name": "Milk Tea", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 49], ["Medium", 59], ["Large", 69]] }]
+      "products": [
+        {
+          "name": "Classic Milk Tea",
+          "image": "/menu/classic-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Winter Melon Milk Tea",
+          "image": "/menu/winter-melon-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Okinawa Milk Tea",
+          "image": "/menu/okinawa-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Hokkaido Milk Tea",
+          "image": "/menu/hokkaido-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Taro Milk Tea",
+          "image": "/menu/taro-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Chocolate Milk Tea",
+          "image": "/menu/chocolate-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Matcha Milk Tea",
+          "image": "/menu/matcha-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Ube Milk Tea",
+          "image": "/menu/ube-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Red Velvet Milk Tea",
+          "image": "/menu/red-velvet-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Brown Sugar Milk Tea",
+          "image": "/menu/brown-sugar-milk-tea.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        }
+      ]
     },
     {
       "name": "Iced Coffee",
-      "products": [{ "name": "Iced Coffee", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 49], ["Medium", 59], ["Large", 69]] }]
+      "products": [
+        {
+          "name": "Americano",
+          "image": "/menu/americano.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Latte",
+          "image": "/menu/latte.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Caramel Macchiato",
+          "image": "/menu/caramel-macchiato.jpg",
+          "variants": [
+            [
+              "Small",
+              69
+            ],
+            [
+              "Medium",
+              79
+            ],
+            [
+              "Large",
+              89
+            ]
+          ]
+        },
+        {
+          "name": "Mocha",
+          "image": "/menu/mocha-coffee.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Hazelnut",
+          "image": "/menu/hazelnut-coffee.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Vanilla",
+          "image": "/menu/vanilla-coffee.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "White Mocha",
+          "image": "/menu/white-mocha.jpg",
+          "variants": [
+            [
+              "Small",
+              69
+            ],
+            [
+              "Medium",
+              79
+            ],
+            [
+              "Large",
+              89
+            ]
+          ]
+        }
+      ]
     },
     {
       "name": "Fruit Soda",
-      "products": [{ "name": "Fruit Soda", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 49], ["Medium", 59], ["Large", 69]] }]
+      "products": [
+        {
+          "name": "Mango Soda",
+          "image": "/menu/mango-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Strawberry Soda",
+          "note": "CONFIRM: price unreadable on the board, assumed 49",
+          "image": "/menu/strawberry-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Blue Lemon Soda",
+          "image": "/menu/blue-lemon-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Green Apple Soda",
+          "note": "CONFIRM: price unreadable on the board, assumed 49",
+          "image": "/menu/green-apple-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Lychee Soda",
+          "image": "/menu/lychee-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Grape Soda",
+          "image": "/menu/grape-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Kiwi Soda",
+          "image": "/menu/kiwi-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Passion Fruit Soda",
+          "image": "/menu/passion-fruit-soda.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        }
+      ]
     },
     {
       "name": "Frappe",
-      "products": [{ "name": "Frappe", "note": "CONFIRM: Large price is not on the board", "variants": [["Small", 85], ["Medium", 95], ["Large", null]] }]
+      "products": [
+        {
+          "name": "Cookies & Cream Frappe",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Mocha Frappe",
+          "image": "/menu/mocha-frappe.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Caramel Frappe",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Matcha Frappe",
+          "image": "/menu/matcha-frappe.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Strawberry Frappe",
+          "image": "/menu/strawberry-frappe.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Taro Frappe",
+          "image": "/menu/taro-frappe.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ]
+          ]
+        },
+        {
+          "name": "Ube Frappe",
+          "image": "/menu/ube-frappe.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Red Velvet Frappe",
+          "image": "/menu/red-velvet-frappe.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ]
+          ]
+        }
+      ]
     },
     {
       "name": "Cheesecake Series",
-      "products": [{ "name": "Cheesecake", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 65], ["Medium", 75], ["Large", 85]] }]
+      "products": [
+        {
+          "name": "Plain Cheesecake",
+          "image": "/menu/plain-cheesecake.jpg",
+          "variants": [
+            [
+              "Small",
+              65
+            ],
+            [
+              "Medium",
+              75
+            ],
+            [
+              "Large",
+              85
+            ]
+          ]
+        },
+        {
+          "name": "Mango Cheesecake",
+          "image": "/menu/mango-cheesecake.jpg",
+          "variants": [
+            [
+              "Small",
+              69
+            ],
+            [
+              "Medium",
+              79
+            ],
+            [
+              "Large",
+              89
+            ]
+          ]
+        },
+        {
+          "name": "Strawberry Cheesecake",
+          "image": "/menu/strawberry-cheesecake.jpg",
+          "variants": [
+            [
+              "Small",
+              69
+            ],
+            [
+              "Medium",
+              79
+            ],
+            [
+              "Large",
+              89
+            ]
+          ]
+        },
+        {
+          "name": "Blueberry Cheesecake",
+          "image": "/menu/blueberry-cheesecake.jpg",
+          "variants": [
+            [
+              "Small",
+              69
+            ],
+            [
+              "Medium",
+              79
+            ],
+            [
+              "Large",
+              89
+            ]
+          ]
+        },
+        {
+          "name": "Oreo Cheesecake",
+          "image": "/menu/oreo-cheesecake.jpg",
+          "variants": [
+            [
+              "Small",
+              69
+            ],
+            [
+              "Medium",
+              79
+            ],
+            [
+              "Large",
+              89
+            ]
+          ]
+        }
+      ]
     },
     {
       "name": "Chocolate Series",
-      "products": [{ "name": "Chocolate", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 69], ["Medium", 79], ["Large", 89]] }]
+      "products": [
+        {
+          "name": "Classic Chocolate",
+          "image": "/menu/iced-chocolate.jpg",
+          "variants": [
+            [
+              "Small",
+              49
+            ],
+            [
+              "Medium",
+              59
+            ],
+            [
+              "Large",
+              69
+            ]
+          ]
+        },
+        {
+          "name": "Choco Hazelnut",
+          "image": "/menu/hazelnut-chocolate.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Choco Mocha",
+          "image": "/menu/mocha-chocolate.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        },
+        {
+          "name": "Dark Chocolate",
+          "image": "/menu/dark-chocolate.jpg",
+          "variants": [
+            [
+              "Small",
+              59
+            ],
+            [
+              "Medium",
+              69
+            ],
+            [
+              "Large",
+              79
+            ]
+          ]
+        }
+      ]
     },
     {
       "name": "Takoyaki",
       "products": [
-        { "name": "Plain Takoyaki", "variants": [["Regular", 50]] },
-        { "name": "Lasagna Takoyaki", "note": "CONFIRM: name read as 'Lasagna' from the board", "variants": [["Regular", 55]] },
-        { "name": "Shrimp Takoyaki", "variants": [["Regular", 65]] },
-        { "name": "Crab Takoyaki", "variants": [["Regular", 65]] },
-        { "name": "Bacon Takoyaki", "variants": [["Regular", 65]] },
-        { "name": "Octopus Takoyaki", "variants": [["Regular", 65]] },
-        { "name": "Ham Takoyaki", "variants": [["Regular", 65]] },
-        { "name": "Cheese Takoyaki", "variants": [["Regular", 60]] }
+        {
+          "name": "Original Takoyaki",
+          "image": "/menu/original-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              55
+            ]
+          ]
+        },
+        {
+          "name": "Teriyaki Takoyaki",
+          "image": "/menu/teriyaki-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        },
+        {
+          "name": "Cheese Takoyaki",
+          "image": "/menu/cheese-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        },
+        {
+          "name": "Seaweed Takoyaki",
+          "image": "/menu/seaweed-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        },
+        {
+          "name": "Spicy Takoyaki",
+          "image": "/menu/spicy-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        },
+        {
+          "name": "Honey Garlic Takoyaki",
+          "image": "/menu/honey-garlic-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        },
+        {
+          "name": "Kimchi Takoyaki",
+          "image": "/menu/kimchi-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        },
+        {
+          "name": "BBQ Takoyaki",
+          "image": "/menu/bbq-takoyaki.jpg",
+          "variants": [
+            [
+              "6 pcs",
+              65
+            ]
+          ]
+        }
       ]
     },
     {
       "name": "Rice Meals",
       "products": [
-        { "name": "Gambas with Rice", "note": "CONFIRM price (small card unreadable)", "variants": [["Regular", null]] },
-        { "name": "Lumpia with Rice", "note": "CONFIRM price (small card unreadable)", "variants": [["Regular", null]] }
+        {
+          "name": "Gambas with Rice",
+          "note": "CONFIRM price (small card unreadable)",
+          "variants": [
+            [
+              "Regular",
+              null
+            ]
+          ]
+        },
+        {
+          "name": "Lumpia with Rice",
+          "note": "CONFIRM price (small card unreadable)",
+          "variants": [
+            [
+              "Regular",
+              null
+            ]
+          ]
+        }
       ]
     },
     {
       "name": "Pulutan",
       "products": [
-        { "name": "Gambas", "note": "CONFIRM price", "variants": [["Regular", null]] },
-        { "name": "Lumpia", "note": "CONFIRM price", "variants": [["Regular", null]] },
-        { "name": "Cheese Stick", "note": "CONFIRM price", "variants": [["Regular", null]] },
-        { "name": "Fries", "note": "CONFIRM price", "variants": [["Regular", null]] }
+        {
+          "name": "Gambas",
+          "note": "CONFIRM price",
+          "variants": [
+            [
+              "Regular",
+              null
+            ]
+          ]
+        },
+        {
+          "name": "Lumpia",
+          "note": "CONFIRM price",
+          "variants": [
+            [
+              "Regular",
+              null
+            ]
+          ]
+        },
+        {
+          "name": "Cheese Stick",
+          "note": "CONFIRM price",
+          "variants": [
+            [
+              "Regular",
+              null
+            ]
+          ]
+        },
+        {
+          "name": "Fries",
+          "note": "CONFIRM price",
+          "variants": [
+            [
+              "Regular",
+              null
+            ]
+          ]
+        },
+        {
+          "name": "Dingdong",
+          "variants": [
+            [
+              "Regular",
+              50
+            ]
+          ]
+        },
+        {
+          "name": "Kropek",
+          "variants": [
+            [
+              "Regular",
+              100
+            ]
+          ]
+        }
       ]
     },
     {
       "name": "Beer",
       "products": [
-        { "name": "Red Horse", "variants": [["500ml", 95], ["1L", 190]] },
-        { "name": "San Mig Light", "variants": [["Bottle", 95]] },
-        { "name": "San Mig Apple", "note": "CONFIRM price", "variants": [["Bottle", null]] }
-      ]
-    },
-    {
-      "name": "Pulutan",
-      "products": [
-        { "name": "Dingdong", "variants": [["Regular", 50]] },
-        { "name": "Kropek", "variants": [["Regular", 100]] }
+        {
+          "name": "Red Horse",
+          "variants": [
+            [
+              "500ml",
+              95
+            ],
+            [
+              "1L",
+              190
+            ]
+          ]
+        },
+        {
+          "name": "San Mig Light",
+          "variants": [
+            [
+              "Bottle",
+              95
+            ]
+          ]
+        },
+        {
+          "name": "San Mig Apple",
+          "note": "CONFIRM price",
+          "variants": [
+            [
+              "Bottle",
+              null
+            ]
+          ]
+        }
       ]
     }
   ],
   "deliveryAreas": [
-    { "name": "Cordova", "fee": null, "note": "CONFIRM delivery fee" },
-    { "name": "Lapu-Lapu City", "fee": null, "note": "CONFIRM delivery fee" }
+    {
+      "name": "Cordova",
+      "fee": null,
+      "note": "CONFIRM delivery fee"
+    },
+    {
+      "name": "Lapu-Lapu City",
+      "fee": null,
+      "note": "CONFIRM delivery fee"
+    }
   ]
 }
