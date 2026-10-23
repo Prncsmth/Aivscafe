@@ -57,9 +57,16 @@
     {
       "name": "Beer",
       "products": [
-        { "name": "Red Horse", "note": "CONFIRM size and price", "variants": [["Bottle", null]] },
-        { "name": "San Mig Light", "note": "CONFIRM price", "variants": [["Bottle", null]] },
+        { "name": "Red Horse", "variants": [["500ml", 95], ["1L", 190]] },
+        { "name": "San Mig Light", "variants": [["Bottle", 95]] },
         { "name": "San Mig Apple", "note": "CONFIRM price", "variants": [["Bottle", null]] }
+      ]
+    },
+    {
+      "name": "Pulutan",
+      "products": [
+        { "name": "Dingdong", "variants": [["Regular", 50]] },
+        { "name": "Kropek", "variants": [["Regular", 100]] }
       ]
     }
   ],
