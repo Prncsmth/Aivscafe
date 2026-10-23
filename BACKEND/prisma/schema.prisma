@@ -1,0 +1,654 @@
+// Shop Management System — Prisma schema (PostgreSQL / Neon)
+//
+// Conventions
+// - Money is stored as integer centavos (Int). PHP 49.00 => 4900.
+// - Ingredient quantities are stored in the ingredient's base unit (G, ML or PCS)
+//   as Decimal(14,3). Purchases entered in KG / L are converted on the way in.
+// - Historical order items snapshot names and prices so edits never rewrite history.
+
+generator client {
+  provider        = "prisma-client-js"
+  // Load relations with SQL joins: one round-trip instead of one per relation (matters on a remote Neon DB).
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────── Enums ───────────────────────────────
+
+enum Role {
+  OWNER
+  CASHIER
+}
+
+enum Unit {
+  G
+  KG
+  ML
+  L
+  PCS
+}
+
+enum OrderType {
+  WALK_IN
+  DELIVERY
+  MESSENGER
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  VOIDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  GCASH
+}
+
+enum PaymentKind {
+  PAYMENT
+  REFUND
+}
+
+enum VerificationStatus {
+  VERIFIED
+  UNVERIFIED
+}
+
+enum OrderSource {
+  ONLINE
+  OFFLINE_SYNC
+}
+
+enum MovementType {
+  OPENING
+  PURCHASE
+  SALE
+  SALE_REVERSAL
+  ADJUSTMENT
+  WASTE
+}
+
+enum ShiftStatus {
+  OPEN
+  CLOSED
+}
+
+enum ReviewStatus {
+  NOT_REQUIRED
+  PENDING_REVIEW
+  REVIEWED
+}
+
+enum CashMovementType {
+  CASH_IN
+  CASH_OUT
+}
+
+enum ConflictType {
+  PRICE_MISMATCH
+  CATALOG_OUTDATED
+  INSUFFICIENT_STOCK
+  PRODUCT_UNAVAILABLE
+  DISCOUNT_LIMIT
+  SHIFT_CLOSED
+}
+
+enum ConflictStatus {
+  OPEN
+  RESOLVED
+}
+
+enum ExpenseCategory {
+  INGREDIENTS
+  PACKAGING
+  TRANSPORTATION
+  UTILITIES
+  RENT
+  SALARIES
+  OTHER
+}
+
+// ─────────────────────────────── Users & auth ───────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  username     String   @unique
+  passwordHash String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions        Session[]
+  orders          Order[]             @relation("OrderCashier")
+  cancelledOrders Order[]             @relation("OrderCancelledBy")
+  payments        Payment[]           @relation("PaymentRecordedBy")
+  verifiedPays    Payment[]           @relation("PaymentVerifiedBy")
+  shifts          CashShift[]         @relation("ShiftUser")
+  reviewedShifts  CashShift[]         @relation("ShiftReviewer")
+  cashMovements   CashMovement[]
+  movements       InventoryMovement[]
+  purchases       Purchase[]
+  expenses        Expense[]
+  auditLogs       AuditLog[]
+  resolvedConfl   SyncConflict[]
+}
+
+/// Refresh-token sessions. Only a SHA-256 hash of the token is stored.
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ─────────────────────────────── Catalog ───────────────────────────────
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  description String?
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  /// false = archived (kept for history, hidden from POS)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category   Category          @relation(fields: [categoryId], references: [id])
+  variants   ProductVariant[]
+  modifiers  ProductModifier[]
+  orderItems OrderItem[]
+
+  @@unique([categoryId, name])
+  @@index([categoryId])
+}
+
+/// A sellable size/option of a product (e.g. Small / Medium / Large, or "Regular").
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  name          String
+  priceCentavos Int
+  isAvailable   Boolean  @default(true)
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  recipeItems RecipeItem[]
+  orderItems  OrderItem[]
+
+  @@unique([productId, name])
+  @@index([productId])
+}
+
+/// Add-ons such as extra pearls, cheese, nata. May consume ingredients via RecipeItem.
+model Modifier {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  priceCentavos Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  products    ProductModifier[]
+  recipeItems RecipeItem[]
+  orderMods   OrderItemModifier[]
+}
+
+model ProductModifier {
+  productId  String
+  modifierId String
+
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  modifier Modifier @relation(fields: [modifierId], references: [id], onDelete: Cascade)
+
+  @@id([productId, modifierId])
+}
+
+/// One ingredient line of a recipe. Belongs to exactly one of variant / modifier.
+/// quantity is in the ingredient's base unit, per 1 unit sold.
+model RecipeItem {
+  id           String  @id @default(cuid())
+  variantId    String?
+  modifierId   String?
+  ingredientId String
+  quantity     Decimal @db.Decimal(14, 3)
+
+  variant    ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  modifier   Modifier?       @relation(fields: [modifierId], references: [id], onDelete: Cascade)
+  ingredient Ingredient      @relation(fields: [ingredientId], references: [id])
+
+  @@unique([variantId, ingredientId])
+  @@unique([modifierId, ingredientId])
+  @@index([ingredientId])
+}
+
+// ─────────────────────────────── Inventory ───────────────────────────────
+
+model Ingredient {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  /// G, ML or PCS
+  baseUnit          Unit
+  /// Running stock in base unit. Can only go negative through an audited override or offline sync.
+  stockQty          Decimal  @default(0) @db.Decimal(14, 3)
+  /// Weighted-average cost in centavos per base unit.
+  avgUnitCost       Decimal  @default(0) @db.Decimal(14, 4)
+  lowStockThreshold Decimal  @default(0) @db.Decimal(14, 3)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  recipeItems   RecipeItem[]
+  batches       InventoryBatch[]
+  movements     InventoryMovement[]
+  purchaseItems PurchaseItem[]
+}
+
+/// Received lots, used for expiry tracking (consumed first-expiry-first-out).
+model InventoryBatch {
+  id             String    @id @default(cuid())
+  ingredientId   String
+  purchaseItemId String?   @unique
+  batchCode      String?
+  receivedQty    Decimal   @db.Decimal(14, 3)
+  remainingQty   Decimal   @db.Decimal(14, 3)
+  unitCost       Decimal   @db.Decimal(14, 4)
+  expiryDate     DateTime?
+  receivedAt     DateTime  @default(now())
+
+  ingredient   Ingredient    @relation(fields: [ingredientId], references: [id])
+  purchaseItem PurchaseItem? @relation(fields: [purchaseItemId], references: [id])
+
+  @@index([ingredientId, expiryDate])
+}
+
+/// Append-only stock ledger. quantity is signed (negative = out).
+/// The unique key on (orderId, ingredientId, type) guarantees an order can only
+/// deduct (SALE) and restore (SALE_REVERSAL) each ingredient once.
+model InventoryMovement {
+  id            String       @id @default(cuid())
+  ingredientId  String
+  type          MovementType
+  quantity      Decimal      @db.Decimal(14, 3)
+  unitCost      Decimal      @db.Decimal(14, 4)
+  /// signed centavos value of this movement (quantity * unitCost, rounded)
+  valueCentavos Int
+  stockAfter    Decimal      @db.Decimal(14, 3)
+  reason        String?
+  orderId       String?
+  purchaseId    String?
+  userId        String?
+  createdAt     DateTime     @default(now())
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  order      Order?     @relation(fields: [orderId], references: [id])
+  purchase   Purchase?  @relation(fields: [purchaseId], references: [id])
+  user       User?      @relation(fields: [userId], references: [id])
+
+  @@unique([orderId, ingredientId, type])
+  @@index([ingredientId, createdAt])
+  @@index([type, createdAt])
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  contact   String?
+  phone     String?
+  notes     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases Purchase[]
+}
+
+model Purchase {
+  id            String   @id @default(cuid())
+  supplierId    String?
+  reference     String?
+  purchasedAt   DateTime @default(now())
+  totalCentavos Int
+  notes         String?
+  userId        String
+  createdAt     DateTime @default(now())
+
+  supplier  Supplier?           @relation(fields: [supplierId], references: [id])
+  user      User                @relation(fields: [userId], references: [id])
+  items     PurchaseItem[]
+  movements InventoryMovement[]
+
+  @@index([purchasedAt])
+}
+
+model PurchaseItem {
+  id                String    @id @default(cuid())
+  purchaseId        String
+  ingredientId      String
+  /// as entered (e.g. 2 KG)
+  quantity          Decimal   @db.Decimal(14, 3)
+  unit              Unit
+  /// converted to ingredient base unit (e.g. 2000 G)
+  baseQuantity      Decimal   @db.Decimal(14, 3)
+  totalCostCentavos Int
+  expiryDate        DateTime?
+  batchCode         String?
+
+  purchase   Purchase        @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  ingredient Ingredient      @relation(fields: [ingredientId], references: [id])
+  batch      InventoryBatch?
+}
+
+// ─────────────────────────────── Orders ───────────────────────────────
+
+model DeliveryArea {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  feeCentavos Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  deliveries DeliveryDetails[]
+}
+
+model Order {
+  id                  String        @id @default(cuid())
+  /// Client-generated idempotency key (UUID). Unique => a retried submit can never create a duplicate.
+  clientId            String        @unique
+  reference           String        @unique
+  /// Temporary receipt reference printed while offline (e.g. OFF-3F2A-0007)
+  tempReference       String?
+  type                OrderType
+  status              OrderStatus   @default(PENDING)
+  source              OrderSource   @default(ONLINE)
+  customerName        String?
+  notes               String?
+  subtotalCentavos    Int
+  discountCentavos    Int           @default(0)
+  discountReason      String?
+  deliveryFeeCentavos Int           @default(0)
+  totalCentavos       Int
+  paidCentavos        Int           @default(0)
+  refundedCentavos    Int           @default(0)
+  paymentStatus       PaymentStatus @default(UNPAID)
+  cashierId           String
+  shiftId             String?
+  catalogVersion      Int?
+  clientCreatedAt     DateTime?
+  syncedAt            DateTime?
+  inventoryDeductedAt DateTime?
+  inventoryReversedAt DateTime?
+  stockOverride       Boolean       @default(false)
+  cancelledAt         DateTime?
+  cancelledById       String?
+  cancelReason        String?
+  completedAt         DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  cashier     User                @relation("OrderCashier", fields: [cashierId], references: [id])
+  cancelledBy User?               @relation("OrderCancelledBy", fields: [cancelledById], references: [id])
+  shift       CashShift?          @relation(fields: [shiftId], references: [id])
+  items       OrderItem[]
+  payments    Payment[]
+  delivery    DeliveryDetails?
+  movements   InventoryMovement[]
+  conflicts   SyncConflict[]
+  statusLog   OrderStatusEvent[]
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([type, createdAt])
+  @@index([paymentStatus])
+  @@index([shiftId])
+}
+
+model OrderItem {
+  id                String  @id @default(cuid())
+  orderId           String
+  productId         String?
+  variantId         String?
+  productName       String
+  variantName       String
+  unitPriceCentavos Int
+  /// sum of modifier prices per unit
+  modifiersCentavos Int     @default(0)
+  quantity          Int
+  lineTotalCentavos Int
+  notes             String?
+
+  order     Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product?            @relation(fields: [productId], references: [id])
+  variant   ProductVariant?     @relation(fields: [variantId], references: [id])
+  modifiers OrderItemModifier[]
+
+  @@index([orderId])
+  @@index([variantId])
+}
+
+model OrderItemModifier {
+  id            String  @id @default(cuid())
+  orderItemId   String
+  modifierId    String?
+  name          String
+  priceCentavos Int
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  modifier  Modifier? @relation(fields: [modifierId], references: [id])
+}
+
+model OrderStatusEvent {
+  id         String       @id @default(cuid())
+  orderId    String
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  userId     String?
+  note       String?
+  createdAt  DateTime     @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model DeliveryDetails {
+  id                  String    @id @default(cuid())
+  orderId             String    @unique
+  customerName        String
+  contactNumber       String
+  address             String
+  areaId              String?
+  areaName            String
+  deliveryFeeCentavos Int
+  instructions        String?
+  dispatchedAt        DateTime?
+  deliveredAt         DateTime?
+
+  order Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  area  DeliveryArea? @relation(fields: [areaId], references: [id])
+}
+
+model Payment {
+  id               String             @id @default(cuid())
+  orderId          String
+  kind             PaymentKind        @default(PAYMENT)
+  method           PaymentMethod
+  /// amount applied to the order (positive). Refunds are kind=REFUND with positive amount.
+  amountCentavos   Int
+  tenderedCentavos Int?
+  changeCentavos   Int?
+  /// GCash reference number, if provided
+  reference        String?
+  verification     VerificationStatus @default(VERIFIED)
+  verifiedById     String?
+  verifiedAt       DateTime?
+  recordedOffline  Boolean            @default(false)
+  shiftId          String?
+  userId           String
+  note             String?
+  createdAt        DateTime           @default(now())
+
+  order      Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  shift      CashShift? @relation(fields: [shiftId], references: [id])
+  user       User       @relation("PaymentRecordedBy", fields: [userId], references: [id])
+  verifiedBy User?      @relation("PaymentVerifiedBy", fields: [verifiedById], references: [id])
+
+  @@index([orderId])
+  @@index([shiftId])
+  @@index([method, createdAt])
+}
+
+// ─────────────────────────────── Cash shifts ───────────────────────────────
+
+model CashShift {
+  id                    String       @id @default(cuid())
+  userId                String
+  /// Equals userId while the shift is OPEN, null once closed => at most one open shift per user.
+  openKey               String?      @unique
+  status                ShiftStatus  @default(OPEN)
+  openedAt              DateTime     @default(now())
+  closedAt              DateTime?
+  startingCashCentavos  Int
+  expectedCashCentavos  Int?
+  countedCashCentavos   Int?
+  cashVarianceCentavos  Int?
+  expectedGcashCentavos Int?
+  /// GCash total the cashier reads from the GCash app at closing (optional, for reconciliation)
+  reportedGcashCentavos Int?
+  notes                 String?
+  reviewStatus          ReviewStatus @default(NOT_REQUIRED)
+  reviewedById          String?
+  reviewedAt            DateTime?
+  reviewNote            String?
+
+  user          User           @relation("ShiftUser", fields: [userId], references: [id])
+  reviewedBy    User?          @relation("ShiftReviewer", fields: [reviewedById], references: [id])
+  orders        Order[]
+  payments      Payment[]
+  cashMovements CashMovement[]
+
+  @@index([userId, openedAt])
+}
+
+model CashMovement {
+  id             String           @id @default(cuid())
+  shiftId        String
+  type           CashMovementType
+  amountCentavos Int
+  reason         String
+  userId         String
+  createdAt      DateTime         @default(now())
+
+  shift CashShift @relation(fields: [shiftId], references: [id])
+  user  User      @relation(fields: [userId], references: [id])
+
+  @@index([shiftId])
+}
+
+// ─────────────────────────────── Finance & admin ───────────────────────────────
+
+model Expense {
+  id             String          @id @default(cuid())
+  category       ExpenseCategory
+  description    String
+  amountCentavos Int
+  incurredAt     DateTime
+  notes          String?
+  userId         String
+  createdAt      DateTime        @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([incurredAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+model SyncConflict {
+  id           String         @id @default(cuid())
+  orderId      String
+  type         ConflictType
+  details      Json
+  status       ConflictStatus @default(OPEN)
+  resolvedById String?
+  resolvedAt   DateTime?
+  resolution   String?
+  createdAt    DateTime       @default(now())
+
+  order      Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  resolvedBy User? @relation(fields: [resolvedById], references: [id])
+
+  @@index([status])
+  @@index([orderId])
+}
+
+/// Key/value business settings (stock policy, discount limits, order prefix, catalog version...).
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+/// Per-day sequence used to build human-friendly order references.
+model OrderCounter {
+  day     String @id
+  lastSeq Int    @default(0)
+}

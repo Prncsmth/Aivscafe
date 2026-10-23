@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+dist/
+out/
+.next/
+coverage/
+*.log
+*.tsbuildinfo
+next-env.d.ts
+
+# Tutorial videos are large; share them separately
+TUTORIALS/

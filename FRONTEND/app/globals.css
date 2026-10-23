@@ -1,0 +1,197 @@
+@import 'tailwindcss';
+
+/*
+ * Aiv's Cafe — clean, professional theme.
+ * Light surfaces for easy reading; the shop's pink is the single brand accent.
+ */
+@theme {
+  --color-canvas: #f7f5f6;
+  --color-surface: #ffffff;
+  --color-subtle: #f4eff2;
+  --color-line: #e6dde2;
+  --color-ink: #1f1720;
+  --color-muted: #66575f;
+  --color-faint: #978893;
+  --color-brand: #c2185b;
+  --color-brand-strong: #db2777;
+  --color-brand-soft: #fde8f1;
+  --color-info: #5b3fc4;
+  --color-ok: #047857;
+  --color-warn: #b45309;
+  --color-bad: #be123c;
+
+  --font-heading: var(--font-inter), system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --shadow-glow: 0 0 0 1px rgb(194 24 91 / 0.12), 0 6px 18px -8px rgb(194 24 91 / 0.35);
+  --shadow-card: 0 1px 2px 0 rgb(31 23 32 / 0.05), 0 1px 1px -1px rgb(31 23 32 / 0.04);
+
+  --animate-rise: rise 0.3s ease-out both;
+  --animate-pop: pop 0.2s ease-out both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    min-height: 100dvh;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.015em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: rgb(219 39 119 / 0.18);
+  }
+}
+
+@layer components {
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+  }
+  .field {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    padding: 0.6rem 0.85rem;
+    color: var(--color-ink);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px rgb(194 24 91 / 0.15);
+  }
+  .field:disabled {
+    background: var(--color-subtle);
+    color: var(--color-muted);
+  }
+  .field::placeholder {
+    color: var(--color-faint);
+  }
+  .label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    margin-bottom: 0.35rem;
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--color-subtle) 25%, var(--color-line) 50%, var(--color-subtle) 75%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: 0.75rem;
+  }
+  .hover-lift {
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .hover-lift:hover {
+    box-shadow: var(--shadow-glow);
+    border-color: rgb(194 24 91 / 0.35);
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+}
+
+/* Halloween animations — login page only. */
+@keyframes hw-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+@keyframes hw-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes hw-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(45deg); }
+}
+@keyframes hw-swing {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+@keyframes hw-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes hw-fly {
+  0% { transform: translate(-10vw, 0); }
+  25% { transform: translate(25vw, -30px); }
+  50% { transform: translate(55vw, 10px); }
+  75% { transform: translate(85vw, -20px); }
+  100% { transform: translate(115vw, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halloween-motion {
+    display: none !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Receipts print on white paper, without the app chrome. */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-area, .print-area * {
+    visibility: visible;
+    color: #000 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 80mm;
+    padding: 4mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

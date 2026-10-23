@@ -1,0 +1,70 @@
+{
+  "_readme": "Real menu for Aiv's Cafe, transcribed from the menu board photo. Prices are in PESOS. Fix anything marked CONFIRM, then run: npm run menu:import. Items with price null are skipped (and listed) until you fill them in. Flavors: add each flavor as its own product (e.g. 'Okinawa Milk Tea') so stock and best-seller reports are per flavor.",
+  "categories": [
+    {
+      "name": "Milk Tea",
+      "products": [{ "name": "Milk Tea", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 49], ["Medium", 59], ["Large", 69]] }]
+    },
+    {
+      "name": "Iced Coffee",
+      "products": [{ "name": "Iced Coffee", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 49], ["Medium", 59], ["Large", 69]] }]
+    },
+    {
+      "name": "Fruit Soda",
+      "products": [{ "name": "Fruit Soda", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 49], ["Medium", 59], ["Large", 69]] }]
+    },
+    {
+      "name": "Frappe",
+      "products": [{ "name": "Frappe", "note": "CONFIRM: Large price is not on the board", "variants": [["Small", 85], ["Medium", 95], ["Large", null]] }]
+    },
+    {
+      "name": "Cheesecake Series",
+      "products": [{ "name": "Cheesecake", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 65], ["Medium", 75], ["Large", 85]] }]
+    },
+    {
+      "name": "Chocolate Series",
+      "products": [{ "name": "Chocolate", "note": "CONFIRM: replace with one product per flavor", "variants": [["Small", 69], ["Medium", 79], ["Large", 89]] }]
+    },
+    {
+      "name": "Takoyaki",
+      "products": [
+        { "name": "Plain Takoyaki", "variants": [["Regular", 50]] },
+        { "name": "Lasagna Takoyaki", "note": "CONFIRM: name read as 'Lasagna' from the board", "variants": [["Regular", 55]] },
+        { "name": "Shrimp Takoyaki", "variants": [["Regular", 65]] },
+        { "name": "Crab Takoyaki", "variants": [["Regular", 65]] },
+        { "name": "Bacon Takoyaki", "variants": [["Regular", 65]] },
+        { "name": "Octopus Takoyaki", "variants": [["Regular", 65]] },
+        { "name": "Ham Takoyaki", "variants": [["Regular", 65]] },
+        { "name": "Cheese Takoyaki", "variants": [["Regular", 60]] }
+      ]
+    },
+    {
+      "name": "Rice Meals",
+      "products": [
+        { "name": "Gambas with Rice", "note": "CONFIRM price (small card unreadable)", "variants": [["Regular", null]] },
+        { "name": "Lumpia with Rice", "note": "CONFIRM price (small card unreadable)", "variants": [["Regular", null]] }
+      ]
+    },
+    {
+      "name": "Pulutan",
+      "products": [
+        { "name": "Gambas", "note": "CONFIRM price", "variants": [["Regular", null]] },
+        { "name": "Lumpia", "note": "CONFIRM price", "variants": [["Regular", null]] },
+        { "name": "Cheese Stick", "note": "CONFIRM price", "variants": [["Regular", null]] },
+        { "name": "Fries", "note": "CONFIRM price", "variants": [["Regular", null]] }
+      ]
+    },
+    {
+      "name": "Beer",
+      "products": [
+        { "name": "Red Horse", "note": "CONFIRM size and price", "variants": [["Bottle", null]] },
+        { "name": "San Mig Light", "note": "CONFIRM price", "variants": [["Bottle", null]] },
+        { "name": "San Mig Apple", "note": "CONFIRM price", "variants": [["Bottle", null]] }
+      ]
+    }
+  ],
+  "deliveryAreas": [
+    { "name": "Cordova", "fee": null, "note": "CONFIRM delivery fee" },
+    { "name": "Lapu-Lapu City", "fee": null, "note": "CONFIRM delivery fee" }
+  ]
+}

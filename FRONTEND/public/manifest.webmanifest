@@ -1,0 +1,15 @@
+{
+  "name": "Aiv's Cafe",
+  "short_name": "Aiv's POS",
+  "description": "POS, inventory and sales for Yummy Brew Blend & Takoyaki Delight by Aiv's Cafe",
+  "start_url": "/pos/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
