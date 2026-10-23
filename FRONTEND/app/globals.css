@@ -65,6 +65,11 @@
   ::selection {
     background: rgb(219 39 119 / 0.18);
   }
+  /* Edge adds its own password-reveal eye; the app has its own toggle, so hide the browser one. */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
 }
 
 @layer components {
