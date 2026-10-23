@@ -211,7 +211,7 @@ export default function PosPage() {
         setShortages((e.details as { shortages: typeof shortages })?.shortages ?? []);
         setError('Not enough stock recorded for this order.');
       } else if (e instanceof ApiError && e.code === 'NO_OPEN_SHIFT') {
-        setError('Open your shift first (Shift & Cash page).');
+        setError('Open the cash drawer first (Cash Drawer page).');
       } else {
         setError(errorMessage(e));
       }
@@ -289,9 +289,9 @@ export default function PosPage() {
         )}
         {!hasShift && (
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-bad/40 bg-bad/10 px-4 py-2.5 text-sm text-bad">
-            <span>No open shift — cash will not be tracked to you.</span>
+            <span>The cash drawer is closed. Open it so sales are counted in your drawer.</span>
             <Link href="/shift/" className="font-bold underline">
-              Open shift
+              Open drawer
             </Link>
           </div>
         )}
@@ -338,7 +338,7 @@ export default function PosPage() {
       {lines.length > 0 && (
         <button
           onClick={() => setCartOpen(true)}
-          className="fixed inset-x-4 bottom-20 z-30 flex animate-pop items-center justify-between rounded-2xl bg-brand px-5 py-4 font-semibold text-white shadow-lg lg:hidden"
+          className="fixed inset-x-4 bottom-28 z-30 flex animate-pop items-center justify-between rounded-2xl bg-brand px-5 py-4 font-semibold text-white shadow-lg lg:hidden"
         >
           <span>{itemCount} item{itemCount === 1 ? '' : 's'}</span>
           <span className="tabular">{peso(totals.totalCentavos)} →</span>

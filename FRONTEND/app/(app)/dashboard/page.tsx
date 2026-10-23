@@ -197,7 +197,7 @@ function OwnerDashboard() {
           )}
           {d.pendingShiftReviews > 0 && (
             <Link href="/shift/">
-              <Badge tone="bad">{d.pendingShiftReviews} shift(s) with cash differences</Badge>
+              <Badge tone="bad">{d.pendingShiftReviews} cash drawer(s) with differences</Badge>
             </Link>
           )}
           {d.unverifiedGcash.count > 0 && (
@@ -351,7 +351,7 @@ function CashierDashboard() {
           {d.shift ? (
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="label">Your shift</p>
+                <p className="label">Your cash drawer</p>
                 <p className="font-heading text-2xl font-bold">Open since {fmtDateTime(d.shift.shift.openedAt)}</p>
                 <p className="text-sm text-muted">
                   {d.shift.orderCount} {walkInOnly ? 'sales' : 'orders'} · {peso(d.shift.totalSalesCentavos)} total · drawer should have {peso(d.shift.expectedCashCentavos)}
@@ -364,12 +364,12 @@ function CashierDashboard() {
           ) : (
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="label">Your shift</p>
+                <p className="label">Your cash drawer</p>
                 <p className="font-heading text-2xl font-bold">Not started</p>
-                <p className="text-sm text-muted">Count the drawer and open your shift before selling.</p>
+                <p className="text-sm text-muted">Count the cash and open the drawer before selling.</p>
               </div>
               <Link href="/shift/">
-                <Button size="lg">Open shift</Button>
+                <Button size="lg">Open drawer</Button>
               </Link>
             </div>
           )}

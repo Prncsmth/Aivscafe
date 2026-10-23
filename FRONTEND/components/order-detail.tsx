@@ -271,7 +271,7 @@ export function OrderDetailModal({
             {order?.status === 'PENDING'
               ? 'Ingredients go back to stock automatically because nothing was prepared yet.'
               : 'Ingredients are treated as used unless the owner chooses to restore them.'}{' '}
-            Any payments are refunded and recorded on your shift.
+            Any payments are refunded from your cash drawer.
           </>
         }
       >

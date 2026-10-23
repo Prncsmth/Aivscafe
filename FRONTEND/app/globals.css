@@ -20,8 +20,9 @@
   --color-warn: #b45309;
   --color-bad: #be123c;
 
-  --font-heading: var(--font-inter), system-ui, sans-serif;
-  --font-sans: var(--font-inter), system-ui, sans-serif;
+  /* San Francisco on Apple devices, Inter elsewhere */
+  --font-heading: -apple-system, BlinkMacSystemFont, 'SF Pro Display', var(--font-inter), system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', var(--font-inter), system-ui, sans-serif;
 
   --shadow-glow: 0 0 0 1px rgb(194 24 91 / 0.12), 0 6px 18px -8px rgb(194 24 91 / 0.35);
   --shadow-card: 0 1px 2px 0 rgb(31 23 32 / 0.05), 0 1px 1px -1px rgb(31 23 32 / 0.04);

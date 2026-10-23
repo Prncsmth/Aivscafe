@@ -16,7 +16,7 @@ export default function ShiftPage() {
   const { user } = useAuth();
   return (
     <NeedsOnline>
-      <PageHeader eyebrow="Daily operations" title="Shift & Cash" subtitle="Open your shift with the starting cash, record cash in/out, and count the drawer when you close." />
+      <PageHeader eyebrow="Daily operations" title="Cash Drawer" subtitle="Open the drawer with the starting cash, record cash in or out during the day, and count the drawer when you close." />
       <MyShift />
       {user?.role === 'OWNER' && <ShiftReviews />}
     </NeedsOnline>
@@ -52,7 +52,7 @@ function MyShift() {
     setError('');
     try {
       await api.post('/shifts/open', { startingCashCentavos: start });
-      toast('Shift opened', 'ok');
+      toast('Cash drawer opened', 'ok');
       setClosed(null);
       await load();
     } catch (e) {
@@ -92,7 +92,7 @@ function MyShift() {
       setCounted(null);
       setGcashReported(null);
       await load();
-      toast('Shift closed', 'ok');
+      toast('Cash drawer closed', 'ok');
     } catch (e) {
       setError(errorMessage(e));
       setConfirmClose(false);
@@ -112,14 +112,14 @@ function MyShift() {
               <Icon name="wallet" className="h-6 w-6" />
             </span>
             <div>
-              <h2 className="text-2xl font-bold">Open a shift</h2>
+              <h2 className="text-2xl font-bold">Open the cash drawer</h2>
               <p className="text-sm text-muted">Count the cash in the drawer before the first sale.</p>
             </div>
           </div>
           <MoneyField label="Starting cash" value={start} onChange={setStart} autoFocus />
           <ErrorNote>{error}</ErrorNote>
           <Button size="lg" className="w-full" loading={busy} onClick={open}>
-            Open shift
+            Open drawer
           </Button>
         </Card>
         {closed && <ClosedSummary s={closed} />}
@@ -164,7 +164,7 @@ function MyShift() {
         </Card>
 
         <Card className="animate-rise space-y-4 p-5 [animation-delay:80ms]">
-          <h2 className="text-xl font-bold">Close shift</h2>
+          <h2 className="text-xl font-bold">Close the cash drawer</h2>
           <p className="text-sm text-muted">Opened {fmtDateTime(summary.shift.openedAt)}. Count every peso in the drawer.</p>
           {unsyncedCount > 0 && (
             <p className="rounded-xl border border-warn/40 bg-warn/10 p-3 text-sm text-warn">
@@ -181,16 +181,16 @@ function MyShift() {
           <TextArea label="Notes" value={closeNotes} onChange={(e) => setCloseNotes(e.target.value)} />
           <ErrorNote>{error}</ErrorNote>
           <Button size="lg" className="w-full" disabled={counted == null} onClick={() => setConfirmClose(true)}>
-            Close shift
+            Close drawer
           </Button>
         </Card>
       </div>
 
       <ConfirmDialog
         open={confirmClose}
-        title="Close this shift?"
+        title="Close the cash drawer?"
         loading={busy}
-        confirmLabel="Close shift"
+        confirmLabel="Close drawer"
         onClose={() => setConfirmClose(false)}
         onConfirm={close}
         message={
@@ -207,7 +207,7 @@ function MyShift() {
 function ClosedSummary({ s }: { s: ShiftSummary }) {
   return (
     <Card className="animate-rise space-y-2 p-6">
-      <h2 className="text-xl font-bold">Last shift summary</h2>
+      <h2 className="text-xl font-bold">Last drawer summary</h2>
       <Row l="Expected cash" v={peso(s.expectedCashCentavos)} />
       <Row l="Counted cash" v={peso(s.shift.countedCashCentavos ?? 0)} />
       <Row l="Difference" v={peso(s.shift.cashVarianceCentavos ?? 0)} />
@@ -257,7 +257,7 @@ function ShiftReviews() {
     if (!reviewing) return;
     try {
       await api.post(`/shifts/${reviewing.id}/review`, { note });
-      toast('Shift marked as reviewed', 'ok');
+      toast('Marked as reviewed', 'ok');
       setReviewing(null);
       setNote('');
       load();
@@ -269,7 +269,7 @@ function ShiftReviews() {
   return (
     <Card className="mt-8 p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-bold">All shifts (owner)</h2>
+        <h2 className="text-xl font-bold">All cash drawers (owner)</h2>
         <SelectField label="Show" value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="PENDING_REVIEW">Needs review</option>
           <option value="">All</option>
@@ -279,7 +279,7 @@ function ShiftReviews() {
       {!rows ? (
         <Skeleton className="h-40" />
       ) : rows.length === 0 ? (
-        <EmptyState title="No shifts to show">Shifts with cash or GCash differences above your threshold appear here.</EmptyState>
+        <EmptyState title="Nothing to review">Cash drawers that closed short or over by more than your limit appear here.</EmptyState>
       ) : (
         <Table head={['Cashier', 'Opened', 'Closed', 'Expected', 'Counted', 'Difference', 'GCash sys / app', 'Review']}>
           {rows.map((r) => (
@@ -312,7 +312,7 @@ function ShiftReviews() {
       )}
       <ConfirmDialog
         open={!!reviewing}
-        title="Mark shift reviewed"
+        title="Mark as reviewed"
         confirmLabel="Save review"
         onClose={() => setReviewing(null)}
         onConfirm={() => (note.trim().length >= 3 ? void review() : toast('Write a short note', 'warn'))}

@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 
 export const metadata: Metadata = {
   title: "Aiv's Cafe",
-  description: 'POS, inventory, shifts and sales for Yummy Brew Blend & Takoyaki Delight by Aiv’s Cafe',
+  description: 'POS, inventory, cash drawer and sales for Yummy Brew Blend & Takoyaki Delight by Aiv’s Cafe',
   manifest: '/manifest.webmanifest',
   icons: { icon: '/favicon.png', apple: '/icons/apple-touch-icon.png' },
   appleWebApp: { capable: true, title: "Aiv's POS", statusBarStyle: 'default' },

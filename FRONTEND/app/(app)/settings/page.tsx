@@ -67,7 +67,7 @@ function BusinessSettings() {
         label="Cash difference that needs owner review"
         value={s.cashVarianceReviewThresholdCentavos}
         onChange={(v) => setS({ ...s, cashVarianceReviewThresholdCentavos: v ?? 0 })}
-        hint="Shifts that close short or over by more than this are flagged."
+        hint="Cash drawers that close short or over by more than this are sent to you for review."
       />
       <Field
         label="Warn about expiry this many days ahead"

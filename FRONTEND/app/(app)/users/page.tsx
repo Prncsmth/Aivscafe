@@ -36,7 +36,7 @@ export default function UsersPage() {
         <PageHeader
           eyebrow="Admin"
           title="Users"
-          subtitle="Cashiers can sell, manage orders and shifts, and record waste. Only owners can change prices, see profit and manage users."
+          subtitle="Cashiers can sell, open and close the cash drawer, and record waste. Only owners can change prices, see profit and manage users."
           actions={
             <>
               <Button variant="secondary" onClick={() => setPwOpen(true)}>

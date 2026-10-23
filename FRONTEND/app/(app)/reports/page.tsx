@@ -215,7 +215,7 @@ function ShiftsTable({ from, to }: { from: string; to: string }) {
   if (!rows || rows.length === 0) return null;
   return (
     <Card className="p-5">
-      <h2 className="mb-3 text-xl font-bold">Sales by shift</h2>
+      <h2 className="mb-3 text-xl font-bold">Sales by cash drawer</h2>
       <Table head={['Cashier', 'Opened', 'Closed', 'Orders', 'Sales', 'Expected cash', 'GCash', 'Cash diff']}>
         {rows.map((s) => (
           <tr key={s.shift.id}>

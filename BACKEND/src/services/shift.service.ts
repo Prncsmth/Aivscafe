@@ -10,7 +10,7 @@ export async function shiftSummary(db: Db, shiftId: string) {
     where: { id: shiftId },
     include: { user: { select: { id: true, name: true } } },
   });
-  if (!shift) throw notFound('Shift');
+  if (!shift) throw notFound('Cash drawer');
 
   // Independent aggregates run in parallel (each is a network round-trip to the database).
   const [pays, moves, sales, voided, openOrders] = await Promise.all([
@@ -54,7 +54,7 @@ export async function shiftSummary(db: Db, shiftId: string) {
 
 export async function openShift(tx: Tx, user: ActingUser, startingCashCentavos: number, notes?: string | null) {
   const existing = await tx.cashShift.findUnique({ where: { openKey: user.id } });
-  if (existing) throw conflict('SHIFT_ALREADY_OPEN', 'You already have an open shift');
+  if (existing) throw conflict('SHIFT_ALREADY_OPEN', 'Your cash drawer is already open');
   const shift = await tx.cashShift.create({
     data: { userId: user.id, openKey: user.id, startingCashCentavos, notes: notes ?? null },
   });
@@ -68,7 +68,7 @@ export async function addCashMovement(
   args: { type: 'CASH_IN' | 'CASH_OUT'; amountCentavos: number; reason: string },
 ) {
   const shift = await tx.cashShift.findUnique({ where: { openKey: user.id } });
-  if (!shift) throw conflict('NO_OPEN_SHIFT', 'Open a shift first');
+  if (!shift) throw conflict('NO_OPEN_SHIFT', 'Open the cash drawer first');
   const m = await tx.cashMovement.create({ data: { shiftId: shift.id, userId: user.id, ...args } });
   await audit(tx, { userId: user.id, action: args.type, entity: 'CashShift', entityId: shift.id, details: args });
   return m;
@@ -81,9 +81,9 @@ export async function closeShift(
   args: { countedCashCentavos: number; reportedGcashCentavos?: number | null; notes?: string | null },
 ) {
   const shift = await tx.cashShift.findUnique({ where: { id: shiftId } });
-  if (!shift) throw notFound('Shift');
-  if (shift.status === 'CLOSED') throw conflict('SHIFT_CLOSED', 'This shift is already closed');
-  if (shift.userId !== user.id && user.role !== 'OWNER') throw forbidden('You can only close your own shift');
+  if (!shift) throw notFound('Cash drawer');
+  if (shift.status === 'CLOSED') throw conflict('SHIFT_CLOSED', 'This cash drawer is already closed');
+  if (shift.userId !== user.id && user.role !== 'OWNER') throw forbidden('You can only close your own cash drawer');
 
   const summary = await shiftSummary(tx, shiftId);
   const settings = await getSettings(tx);
@@ -109,7 +109,7 @@ export async function closeShift(
       reviewStatus: needsReview ? 'PENDING_REVIEW' : 'NOT_REQUIRED',
     },
   });
-  if (closed.count === 0) throw conflict('SHIFT_CLOSED', 'This shift is already closed');
+  if (closed.count === 0) throw conflict('SHIFT_CLOSED', 'This cash drawer is already closed');
   await audit(tx, {
     userId: user.id,
     action: 'SHIFT_CLOSED',
@@ -122,8 +122,8 @@ export async function closeShift(
 
 export async function reviewShift(tx: Tx, user: ActingUser, shiftId: string, note: string) {
   const shift = await tx.cashShift.findUnique({ where: { id: shiftId } });
-  if (!shift) throw notFound('Shift');
-  if (shift.status !== 'CLOSED') throw conflict('SHIFT_OPEN', 'Only closed shifts can be reviewed');
+  if (!shift) throw notFound('Cash drawer');
+  if (shift.status !== 'CLOSED') throw conflict('SHIFT_OPEN', 'Only closed cash drawers can be reviewed');
   const updated = await tx.cashShift.update({
     where: { id: shiftId },
     data: { reviewStatus: 'REVIEWED', reviewedById: user.id, reviewedAt: new Date(), reviewNote: note },

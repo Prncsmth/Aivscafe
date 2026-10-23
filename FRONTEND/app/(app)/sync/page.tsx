@@ -24,7 +24,7 @@ const CONFLICT_TEXT: Record<string, string> = {
   INSUFFICIENT_STOCK: 'Stock went below zero',
   PRODUCT_UNAVAILABLE: 'Item was unavailable',
   DISCOUNT_LIMIT: 'Discount above cashier limit',
-  SHIFT_CLOSED: 'Shift already closed',
+  SHIFT_CLOSED: 'Cash drawer was already closed',
 };
 
 export default function SyncPage() {

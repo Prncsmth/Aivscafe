@@ -113,7 +113,7 @@ export async function nextReference(tx: Tx, prefix: string, at = new Date()): Pr
 
 export async function requireOpenShift(db: Db, userId: string) {
   const shift = await db.cashShift.findUnique({ where: { openKey: userId } });
-  if (!shift) throw conflict('NO_OPEN_SHIFT', 'Open a shift before taking orders or payments');
+  if (!shift) throw conflict('NO_OPEN_SHIFT', 'Open the cash drawer before taking sales or payments');
   return shift;
 }
 
@@ -414,7 +414,7 @@ export async function cancelOrVoid(
     if (refunds.length) {
       const shift = await tx.cashShift.findUnique({ where: { openKey: user.id } });
       if (refunds.some((r) => r.method === 'CASH') && !shift) {
-        throw conflict('NO_OPEN_SHIFT', 'Open a shift to pay out a cash refund');
+        throw conflict('NO_OPEN_SHIFT', 'Open the cash drawer to pay out a cash refund');
       }
       for (const r of refunds) {
         await tx.payment.create({
