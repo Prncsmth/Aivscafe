@@ -136,7 +136,6 @@ export function ReceiptView({ r, shopName = "Aiv's Cafe" }: { r: ReceiptData; sh
       )}
       <div className="my-3 border-t border-dashed border-ink/30" />
       <p className="text-center text-[11px]">Salamat! Thank you</p>
-      <p className="text-center text-[10px]">This is not an official receipt.</p>
     </div>
   );
 }
